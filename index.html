@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodFusion - Culinary Delights</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        /* Custom styles for the carousel */
+        .carousel-item {
+            display: none;
+        }
+        .carousel-item.active {
+            display: block;
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Cookie Consent Banner */
+        #cookieConsent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+        @media (min-width: 768px) {
+            #cookieConsent {
+                flex-direction: row;
+                justify-content: space-between;
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        /* Page content visibility */
+        .page-section {
+            display: none;
+        }
+        .page-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="hidden">
+        <p class="text-sm md:text-base">
+            This website uses cookies to ensure you get the best experience on our website.
+            <a href="#privacy-policy" class="text-blue-300 hover:underline" onclick="showPage('privacy-policy-section')">Learn more</a>
+        </p>
+        <button id="acceptCookies" class="mt-2 md:mt-0 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md shadow-md transition duration-300 ease-in-out text-sm md:text-base">
+            Accept
+        </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md p-4 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center flex-wrap">
+            <a href="#" class="text-2xl font-bold text-orange-600" onclick="showPage('homepage-section')">FoodFusion</a>
+            <div class="block lg:hidden">
+                <button id="nav-toggle" class="flex items-center px-3 py-2 border rounded text-orange-600 border-orange-400 hover:text-orange-800 hover:border-orange-600">
+                    <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v15z"/></svg>
+                </button>
+            </div>
+            <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden" id="nav-content">
+                <ul class="text-lg lg:flex-grow lg:flex lg:justify-end">
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('homepage-section')">Home</a></li>
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('about-us-section')">About Us</a></li>
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('recipe-collection-section')">Recipe Collection</a></li>
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('community-cookbook-section')">Community Cookbook</a></li>
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('contact-us-section')">Contact Us</a></li>
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('culinary-resources-section')">Culinary Resources</a></li>
+                    <li><a href="#" class="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-orange-600 mr-4 p-2 rounded-md transition duration-300" onclick="showPage('educational-resources-section')">Educational Resources</a></li>
+                    <li><button id="login-btn" class="block mt-4 lg:inline-block lg:mt-0 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out mr-2">Login</button></li>
+                    <li><button id="join-us-btn" class="block mt-4 lg:inline-block lg:mt-0 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Join Us</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area - All sections are initially hidden except homepage -->
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Homepage Section -->
+        <section id="homepage-section" class="page-section active">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 mb-8">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-center text-gray-900 mb-6">Welcome to FoodFusion!</h1>
+                <p class="text-lg text-center text-gray-700 leading-relaxed max-w-3xl mx-auto">
+                    FoodFusion is your ultimate culinary companion, a vibrant community where food lovers unite to explore, create, and share the joy of cooking. Discover diverse recipes, learn new techniques, and connect with fellow enthusiasts.
+                </p>
+
+                <!-- News Feed -->
+                <div class="mt-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Featured Recipes & Culinary Trends</h2>
+                    <div id="news-feed-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- News items will be loaded here dynamically by JS -->
+                        <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+                            <img src="[https://placehold.co/600x400/FFD700/000000?text=Loading+News](https://placehold.co/600x400/FFD700/000000?text=Loading+News)..." alt="Loading News" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">Loading News...</h3>
+                                <p class="text-gray-700 text-sm">Please wait while we fetch the latest culinary updates.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Cooking Events Carousel -->
+                <div class="mt-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Upcoming Cooking Events</h2>
+                    <div class="relative w-full max-w-4xl mx-auto">
+                        <div id="event-carousel" class="overflow-hidden rounded-xl shadow-lg">
+                            <!-- Event items will be loaded here dynamically by JS -->
+                            <div class="carousel-item active">
+                                <img src="[https://placehold.co/800x450/FF6347/FFFFFF?text=Loading+Events](https://placehold.co/800x450/FF6347/FFFFFF?text=Loading+Events)..." alt="Loading Events" class="w-full h-64 md:h-96 object-cover rounded-t-xl">
+                                <div class="p-6 bg-white rounded-b-xl">
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Loading Events...</h3>
+                                    <p class="text-gray-700 mb-2">Please wait while we fetch upcoming events.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="prev-event" class="absolute top-1/2 left-4 -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-event" class="absolute top-1/2 right-4 -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about-us-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">About FoodFusion</h2>
+                <div class="max-w-4xl mx-auto text-lg text-gray-700 leading-relaxed">
+                    <p class="mb-4">
+                        At FoodFusion, we believe that food is more than just sustenance—it's a universal language that connects cultures, sparks creativity, and brings people together. Our culinary philosophy is rooted in the joy of discovery, the art of creation, and the warmth of sharing. We are passionate about empowering home cooks and seasoned chefs alike to explore new flavors, master diverse techniques, and express their unique culinary voice.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Our Values</h3>
+                    <ul class="list-disc list-inside mb-4 pl-4">
+                        <li class="mb-2"><strong>Passion:</strong> We are driven by an unwavering love for food and cooking.</li>
+                        <li class="mb-2"><strong>Community:</strong> We foster a supportive and inclusive environment where everyone feels welcome to share and learn.</li>
+                        <li class="mb-2"><strong>Innovation:</strong> We encourage experimentation and creativity in the kitchen, pushing culinary boundaries.</li>
+                        <li class="mb-2"><strong>Quality:</strong> We are committed to providing high-quality, reliable recipes and resources.</li>
+                        <li class="mb-2"><strong>Sustainability:</strong> We advocate for mindful cooking practices and responsible sourcing.</li>
+                    </ul>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Meet Our Team</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
+                        <!-- Team Member 1 -->
+                        <div class="text-center">
+                            <img src="[https://placehold.co/150x150/FFD700/000000?text=Chef+A](https://placehold.co/150x150/FFD700/000000?text=Chef+A)" alt="Chef Alex" class="rounded-full mx-auto mb-4 w-32 h-32 object-cover shadow-md">
+                            <h4 class="font-bold text-xl text-gray-900">Chef Alex Chen</h4>
+                            <p class="text-orange-600">Founder & Head Chef</p>
+                            <p class="text-sm text-gray-600 mt-2">A Michelin-starred chef with a passion for fusion cuisine and culinary education.</p>
+                        </div>
+                        <!-- Team Member 2 -->
+                        <div class="text-center">
+                            <img src="[https://placehold.co/150x150/ADD8E6/000000?text=Food+B](https://placehold.co/150x150/ADD8E6/000000?text=Food+B)" alt="Food Blogger Sarah" class="rounded-full mx-auto mb-4 w-32 h-32 object-cover shadow-md">
+                            <h4 class="font-bold text-xl text-gray-900">Sarah Lee</h4>
+                            <p class="text-orange-600">Content Creator & Recipe Developer</p>
+                            <p class="text-sm text-gray-600 mt-2">A renowned food blogger specializing in healthy and accessible home cooking.</p>
+                        </div>
+                        <!-- Team Member 3 -->
+                        <div class="text-center">
+                            <img src="[https://placehold.co/150x150/DDA0DD/000000?text=Tech+C](https://placehold.co/150x150/DDA0DD/000000?text=Tech+C)" alt="Tech Lead David" class="rounded-full mx-auto mb-4 w-32 h-32 object-cover shadow-md">
+                            <h4 class="font-bold text-xl text-gray-900">David Kim</h4>
+                            <p class="text-orange-600">Tech Lead & Platform Architect</p>
+                            <p class="text-sm text-gray-600 mt-2">The tech wizard behind FoodFusion, ensuring a seamless and intuitive user experience.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipe Collection Section -->
+        <section id="recipe-collection-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Our Recipe Collection</h2>
+                <p class="text-lg text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    Explore a curated collection of diverse recipes from around the world, categorized to help you find exactly what you're craving.
+                </p>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <select class="p-3 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                        <option value="">All Cuisines</option>
+                        <option value="italian">Italian</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="asian">Asian</option>
+                        <option value="indian">Indian</option>
+                        <option value="mediterranean">Mediterranean</option>
+                    </select>
+                    <select class="p-3 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                        <option value="">All Dietary</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="gluten-free">Gluten-Free</option>
+                        <option value="dairy-free">Dairy-Free</option>
+                    </select>
+                    <select class="p-3 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                        <option value="">All Difficulty</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <!-- Recipe Grid -->
+                <div id="recipe-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Recipes will be loaded here dynamically by JS -->
+                    <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                        <img src="[https://placehold.co/600x400/CCCCCC/000000?text=Loading+Recipes](https://placehold.co/600x400/CCCCCC/000000?text=Loading+Recipes)..." alt="Loading Recipes" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Loading Recipes...</h3>
+                            <p class="text-gray-700 text-sm mb-2">Fetching delicious recipes from our collection.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Cookbook Section -->
+        <section id="community-cookbook-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Community Cookbook</h2>
+                <p class="text-lg text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    A collaborative space where members can share their favorite recipes, cooking tips, and culinary experiences with the FoodFusion community.
+                </p>
+
+                <!-- Share Your Recipe/Tip Form -->
+                <div class="bg-gray-50 rounded-xl p-6 mb-8 shadow-md">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Share Your Culinary Wisdom!</h3>
+                    <form id="community-post-form">
+                        <div class="mb-4">
+                            <label for="post-title" class="block text-gray-700 text-sm font-bold mb-2">Title:</label>
+                            <input type="text" id="post-title" name="post-title" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" placeholder="e.g., My Grandma's Secret Chili Recipe" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="post-type" class="block text-gray-700 text-sm font-bold mb-2">Type of Post:</label>
+                            <select id="post-type" name="post-type" class="shadow border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                                <option value="">Select Type</option>
+                                <option value="recipe">Recipe Share</option>
+                                <option value="tip">Cooking Tip</option>
+                                <option value="experience">Culinary Experience</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label for="post-content" class="block text-gray-700 text-sm font-bold mb-2">Content:</label>
+                            <textarea id="post-content" name="post-content" rows="6" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" placeholder="Share your recipe, tip, or story here..." required></textarea>
+                        </div>
+                        <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                            Submit Post
+                        </button>
+                        <div id="community-form-message" class="mt-4 text-center text-sm"></div>
+                    </form>
+                </div>
+
+                <!-- Community Posts Display -->
+                <div id="community-posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Community posts will be loaded here dynamically by JS -->
+                    <div class="bg-gray-50 rounded-xl shadow-md p-6">
+                        <h3 class="font-bold text-xl text-gray-900 mb-2">Loading Community Posts...</h3>
+                        <p class="text-gray-700">Please wait while we fetch community contributions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Us Section -->
+        <section id="contact-us-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Contact Us</h2>
+                <p class="text-lg text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    Have questions, recipe requests, or feedback? We'd love to hear from you!
+                </p>
+
+                <div class="max-w-xl mx-auto bg-gray-50 rounded-xl p-6 shadow-md">
+                    <form id="contact-form">
+                        <div class="mb-4">
+                            <label for="contact-name" class="block text-gray-700 text-sm font-bold mb-2">Your Name:</label>
+                            <input type="text" id="contact-name" name="contact-name" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="contact-email" class="block text-gray-700 text-sm font-bold mb-2">Your Email:</label>
+                            <input type="email" id="contact-email" name="contact-email" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="contact-subject" class="block text-gray-700 text-sm font-bold mb-2">Subject:</label>
+                            <input type="text" id="contact-subject" name="contact-subject" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="contact-message" class="block text-gray-700 text-sm font-bold mb-2">Message:</label>
+                            <textarea id="contact-message" name="contact-message" rows="5" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required></textarea>
+                        </div>
+                        <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                            Send Message
+                        </button>
+                        <div id="contact-form-message" class="mt-4 text-center text-sm"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Culinary Resources Section -->
+        <section id="culinary-resources-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Culinary Resources</h2>
+                <p class="text-lg text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    Enhance your cooking skills with our collection of downloadable recipe cards, cooking tutorials, and instructional videos on various techniques and kitchen hacks.
+                </p>
+
+                <div id="culinary-resources-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Resources will be loaded here dynamically by JS -->
+                    <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                        <img src="[https://placehold.co/600x400/CCCCCC/000000?text=Loading+Resources](https://placehold.co/600x400/CCCCCC/000000?text=Loading+Resources)..." alt="Loading Resources" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Loading Resources...</h3>
+                            <p class="text-gray-700 text-sm mb-3">Fetching culinary guides and tutorials.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Resources Section -->
+        <section id="educational-resources-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Educational Resources</h2>
+                <p class="text-lg text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    Expand your culinary knowledge with our in-depth articles, guides, and courses on food science, nutrition, and global food history.
+                </p>
+
+                <div id="educational-resources-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Resources will be loaded here dynamically by JS -->
+                    <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                        <img src="[https://placehold.co/600x400/CCCCCC/000000?text=Loading+Resources](https://placehold.co/600x400/CCCCCC/000000?text=Loading+Resources)..." alt="Loading Resources" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Loading Resources...</h3>
+                            <p class="text-gray-700 text-sm mb-3">Fetching educational content.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Privacy Policy Section -->
+        <section id="privacy-policy-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Privacy Policy</h2>
+                <div class="max-w-4xl mx-auto text-lg text-gray-700 leading-relaxed">
+                    <p class="mb-4">
+                        Your privacy is important to us. This Privacy Policy explains how FoodFusion collects, uses, and protects your personal information when you use our website.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Information We Collect</h3>
+                    <p class="mb-4">
+                        We collect information you provide directly to us, such as when you create an account, submit a recipe, contact us, or participate in community discussions. This may include your name, email address, and any other information you choose to provide.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">How We Use Your Information</h3>
+                    <p class="mb-4">
+                        We use the information we collect to provide, maintain, and improve our services, to communicate with you, to personalize your experience, and to protect FoodFusion and our users.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Sharing of Information</h3>
+                    <p class="mb-4">
+                        We do not share your personal information with third parties except as described in this Privacy Policy or with your consent.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Security</h3>
+                    <p class="mb-4">
+                        We take reasonable measures to help protect information about you from loss, theft, misuse, and unauthorized access, disclosure, alteration, and destruction.
+                    </p>
+                    <p class="text-sm text-gray-500 mt-8">
+                        Last updated: July 7, 2025
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cookie Policy Section -->
+        <section id="cookie-policy-section" class="page-section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Cookie Policy</h2>
+                <div class="max-w-4xl mx-auto text-lg text-gray-700 leading-relaxed">
+                    <p class="mb-4">
+                        This Cookie Policy explains what cookies are, how FoodFusion uses them, and your choices regarding cookies.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">What are Cookies?</h3>
+                    <p class="mb-4">
+                        Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work more efficiently and provide information to the website owners.
+                    </p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">How We Use Cookies</h3>
+                    <p class="mb-4">
+                        We use cookies for various purposes, including:
+                    </p>
+                    <ul class="list-disc list-inside mb-4 pl-4">
+                        <li class="mb-2"><strong>Essential Cookies:</strong> Necessary for the website to function properly.</li>
+                        <li class="mb-2"><strong>Performance Cookies:</strong> Collect information about how you use our website to help us improve its performance.</li>
+                        <li class="mb-2"><strong>Functionality Cookies:</strong> Remember your preferences and choices to enhance your experience.</li>
+                        <li class="mb-2"><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our website, such as which pages are most popular.</li>
+                    </ul>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Your Choices</h3>
+                    <p class="mb-4">
+                        You have the right to decide whether to accept or reject cookies. You can set your browser to refuse all or some browser cookies, or to alert you when websites set or access cookies.
+                    </p>
+                    <p class="text-sm text-gray-500 mt-8">
+                        Last updated: July 7, 2025
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Join Us Pop-up Form (Modal) -->
+    <div id="join-us-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" data-modal-id="join-us-modal">&times;</span>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Join FoodFusion</h2>
+            <form id="registration-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="first-name" class="block text-gray-700 text-sm font-bold mb-2">First Name:</label>
+                        <input type="text" id="first-name" name="first-name" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                    </div>
+                    <div>
+                        <label for="last-name" class="block text-gray-700 text-sm font-bold mb-2">Last Name:</label>
+                        <input type="text" id="last-name" name="last-name" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="reg-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="reg-email" name="reg-email" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                </div>
+                <div class="mb-6">
+                    <label for="reg-password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                    <input type="password" id="reg-password" name="reg-password" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                </div>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                    Register
+                </button>
+                <div id="registration-message" class="mt-4 text-center text-sm"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Pop-up Form (Modal) -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" data-modal-id="login-modal">&times;</span>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Login to FoodFusion</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="login-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="login-email" name="login-email" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                </div>
+                <div class="mb-6">
+                    <label for="login-password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                    <input type="password" id="login-password" name="login-password" class="shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-orange-500" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                    Login
+                </button>
+                <div id="login-message" class="mt-4 text-center text-sm"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-6 md:p-8 mt-12 rounded-t-xl shadow-inner">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-2xl font-bold text-orange-500 mb-2">FoodFusion</h3>
+                <p class="text-sm text-gray-400">&copy; 2025 All rights reserved.</p>
+            </div>
+            <div class="mb-4 md:mb-0">
+                <h4 class="font-semibold text-lg mb-2">Quick Links</h4>
+                <ul>
+                    <li><a href="#" class="text-gray-300 hover:text-orange-500 transition duration-300" onclick="showPage('privacy-policy-section')">Privacy Policy</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-orange-500 transition duration-300" onclick="showPage('cookie-policy-section')">Cookie Policy</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-orange-500 transition duration-300" onclick="showPage('contact-us-section')">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-lg mb-2">Connect With Us</h4>
+                <div class="flex justify-center md:justify-start space-x-4">
+                    <a href="[https://facebook.com](https://facebook.com)" target="_blank" class="text-gray-300 hover:text-blue-600 transition duration-300 text-2xl"><i class="fab fa-facebook"></i></a>
+                    <a href="[https://twitter.com](https://twitter.com)" target="_blank" class="text-gray-300 hover:text-blue-400 transition duration-300 text-2xl"><i class="fab fa-twitter"></i></a>
+                    <a href="[https://instagram.com](https://instagram.com)" target="_blank" class="text-gray-300 hover:text-pink-500 transition duration-300 text-2xl"><i class="fab fa-instagram"></i></a>
+                    <a href="[https://pinterest.com](https://pinterest.com)" target="_blank" class="text-gray-300 hover:text-red-600 transition duration-300 text-2xl"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navigation Toggle ---
+        document.getElementById('nav-toggle').onclick = function () {
+            document.getElementById('nav-content').classList.toggle('hidden');
+        }
+
+        // --- Page Navigation Logic ---
+        function showPage(pageId) {
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none'; // Ensure it's hidden
+            });
+            const activeSection = document.getElementById(pageId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+                activeSection.style.display = 'block'; // Show the active section
+            }
+            // Hide mobile nav after selection
+            document.getElementById('nav-content').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+        }
+
+        // Initialize with homepage active
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('homepage-section');
+            fetchDynamicContent(); // Fetch initial dynamic content
+        });
+
+        // --- Modal Handling Function ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Clear messages and reset forms when closing modals
+            if (modalId === 'join-us-modal') {
+                document.getElementById('registration-message').textContent = '';
+                document.getElementById('registration-form').reset();
+            } else if (modalId === 'login-modal') {
+                document.getElementById('login-message').textContent = '';
+                document.getElementById('login-form').reset();
+            }
+        }
+
+        // Attach event listeners to close buttons
+        document.querySelectorAll('.close-button').forEach(button => {
+            button.onclick = function() {
+                const modalId = this.dataset.modalId;
+                closeModal(modalId);
+            };
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
+        }
+
+        // --- Join Us (Registration) Pop-up Logic ---
+        const joinUsBtn = document.getElementById('join-us-btn');
+        const registrationForm = document.getElementById('registration-form');
+        const registrationMessage = document.getElementById('registration-message');
+
+        joinUsBtn.onclick = function() {
+            openModal('join-us-modal');
+        }
+
+        registrationForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            registrationMessage.textContent = 'Registering...';
+            registrationMessage.className = 'mt-4 text-center text-sm text-gray-600';
+
+            try {
+                const response = await fetch('php/register.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstName, lastName, email, password })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    registrationMessage.textContent = result.message;
+                    registrationMessage.className = 'mt-4 text-center text-sm text-green-600';
+                    registrationForm.reset();
+                    setTimeout(() => closeModal('join-us-modal'), 2000);
+                } else {
+                    registrationMessage.textContent = result.message;
+                    registrationMessage.className = 'mt-4 text-center text-sm text-red-600';
+                }
+            } catch (error) {
+                console.error('Registration Error:', error);
+                registrationMessage.textContent = 'An error occurred during registration. Please try again.';
+                registrationMessage.className = 'mt-4 text-center text-sm text-red-600';
+            }
+        });
+
+        // --- Login Pop-up Logic ---
+        const loginBtn = document.getElementById('login-btn');
+        const loginForm = document.getElementById('login-form');
+        const loginMessage = document.getElementById('login-message');
+
+        loginBtn.onclick = function() {
+            openModal('login-modal');
+        }
+
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            loginMessage.textContent = 'Logging in...';
+            loginMessage.className = 'mt-4 text-center text-sm text-gray-600';
+
+            try {
+                const response = await fetch('php/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    loginMessage.textContent = result.message;
+                    loginMessage.className = 'mt-4 text-center text-sm text-green-600';
+                    loginForm.reset();
+                    // In a real app, you'd redirect or update UI for logged-in state
+                    setTimeout(() => closeModal('login-modal'), 2000);
+                } else {
+                    loginMessage.textContent = result.message;
+                    loginMessage.className = 'mt-4 text-center text-sm text-red-600';
+                }
+            } catch (error) {
+                console.error('Login Error:', error);
+                loginMessage.textContent = 'An error occurred during login. Please try again.';
+                loginMessage.className = 'mt-4 text-center text-sm text-red-600';
+            }
+        });
+
+
+        // --- Carousel Logic ---
+        let currentEventIndex = 0;
+        let eventItems = []; // Will be populated dynamically
+        let totalEvents = 0;
+        let eventInterval;
+
+        function showEvent(index) {
+            if (eventItems.length === 0) return; // Do nothing if no events
+            eventItems.forEach((item, i) => {
+                item.classList.remove('active');
+                if (i === index) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        function startCarousel() {
+            if (eventInterval) clearInterval(eventInterval); // Clear existing interval
+            eventInterval = setInterval(() => {
+                currentEventIndex = (currentEventIndex + 1) % totalEvents;
+                showEvent(currentEventIndex);
+            }, 5000); // Change event every 5 seconds
+        }
+
+        document.getElementById('prev-event').addEventListener('click', () => {
+            if (totalEvents > 0) {
+                currentEventIndex = (currentEventIndex - 1 + totalEvents) % totalEvents;
+                showEvent(currentEventIndex);
+                startCarousel(); // Reset interval on manual navigation
+            }
+        });
+
+        document.getElementById('next-event').addEventListener('click', () => {
+            if (totalEvents > 0) {
+                currentEventIndex = (currentEventIndex + 1) % totalEvents;
+                showEvent(currentEventIndex);
+                startCarousel(); // Reset interval on manual navigation
+            }
+        });
+
+        // Pause on hover
+        const eventCarousel = document.getElementById('event-carousel');
+        eventCarousel.addEventListener('mouseenter', () => clearInterval(eventInterval));
+        eventCarousel.addEventListener('mouseleave', () => {
+            if (totalEvents > 0) startCarousel();
+        });
+
+        // --- Community Post Form Submission ---
+        const communityPostForm = document.getElementById('community-post-form');
+        const communityFormMessage = document.getElementById('community-form-message');
+
+        communityPostForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('post-title').value;
+            const postType = document.getElementById('post-type').value;
+            const content = document.getElementById('post-content').value;
+
+            communityFormMessage.textContent = 'Submitting post...';
+            communityFormMessage.className = 'mt-4 text-center text-sm text-gray-600';
+
+            try {
+                const response = await fetch('php/submit_community_post.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, postType, content })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    communityFormMessage.textContent = result.message;
+                    communityFormMessage.className = 'mt-4 text-center text-sm text-green-600';
+                    communityPostForm.reset();
+                    // Optionally refresh community posts
+                    fetchCommunityPosts();
+                } else {
+                    communityFormMessage.textContent = result.message;
+                    communityFormMessage.className = 'mt-4 text-center text-sm text-red-600';
+                }
+            } catch (error) {
+                console.error('Community Post Submission Error:', error);
+                communityFormMessage.textContent = 'An error occurred submitting your post. Please try again.';
+                communityFormMessage.className = 'mt-4 text-center text-sm text-red-600';
+            }
+        });
+
+        // --- Contact Form Submission ---
+        const contactForm = document.getElementById('contact-form');
+        const contactFormMessage = document.getElementById('contact-form-message');
+
+        contactForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+
+            contactFormMessage.textContent = 'Sending message...';
+            contactFormMessage.className = 'mt-4 text-center text-sm text-gray-600';
+
+            try {
+                const response = await fetch('php/contact_form_handler.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, subject, message })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    contactFormMessage.textContent = result.message;
+                    contactFormMessage.className = 'mt-4 text-center text-sm text-green-600';
+                    contactForm.reset();
+                } else {
+                    contactFormMessage.textContent = result.message;
+                    contactFormMessage.className = 'mt-4 text-center text-sm text-red-600';
+                }
+            } catch (error) {
+                console.error('Contact Form Submission Error:', error);
+                contactFormMessage.textContent = 'An error occurred sending your message. Please try again.';
+                contactFormMessage.className = 'mt-4 text-center text-sm text-red-600';
+            }
+        });
+
+        // --- Cookie Consent Logic ---
+        const cookieConsentBanner = document.getElementById('cookieConsent');
+        const acceptCookiesBtn = document.getElementById('acceptCookies');
+
+        // Check if cookie consent has been given
+        if (!localStorage.getItem('cookieConsentGiven')) {
+            cookieConsentBanner.classList.remove('hidden');
+        }
+
+        acceptCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookieConsentGiven', 'true');
+            cookieConsentBanner.classList.add('hidden');
+        });
+
+        // --- Dynamic Content Loading Functions (Examples) ---
+
+        async function fetchNewsFeed() {
+            const newsFeedContainer = document.getElementById('news-feed-container');
+            newsFeedContainer.innerHTML = '<div class="col-span-full text-center text-gray-600">Loading news feed...</div>'; // Loading indicator
+
+            try {
+                // In a real app, you'd have a php/get_news.php
+                // For now, using static data for demonstration
+                const newsData = [
+                    { title: "The Art of Spicy Tacos", content: "Discover how to master the perfect balance of heat and flavor in your homemade tacos. A culinary trend you don't want to miss!", imageUrl: "[https://placehold.co/600x400/FFD700/000000?text=Spicy+Tacos](https://placehold.co/600x400/FFD700/000000?text=Spicy+Tacos)" },
+                    { title: "Vegan Delights: Beyond the Basics", content: "Explore innovative vegan recipes that are bursting with flavor and creativity. Featured recipe of the week!", imageUrl: "[https://placehold.co/600x400/ADD8E6/000000?text=Vegan+Delight](https://placehold.co/600x400/ADD8E6/000000?text=Vegan+Delight)" },
+                    { title: "Embracing the Mediterranean Diet", content: "Learn about the health benefits and delicious recipes from the Mediterranean region. A timeless culinary trend.", imageUrl: "[https://placehold.co/600x400/DDA0DD/000000?text=Mediterranean](https://placehold.co/600x400/DDA0DD/000000?text=Mediterranean)" }
+                ];
+
+                newsFeedContainer.innerHTML = ''; // Clear loading indicator
+                newsData.forEach(news => {
+                    const newsItemHtml = `
+                        <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+                            <img src="${news.imageUrl}" alt="${news.title}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">${news.title}</h3>
+                                <p class="text-gray-700 text-sm">${news.content}</p>
+                                <a href="#" class="text-orange-600 hover:underline mt-3 inline-block">Read More</a>
+                            </div>
+                        </div>
+                    `;
+                    newsFeedContainer.insertAdjacentHTML('beforeend', newsItemHtml);
+                });
+
+            } catch (error) {
+                console.error('Error fetching news feed:', error);
+                newsFeedContainer.innerHTML = '<div class="col-span-full text-center text-red-600">Failed to load news feed.</div>';
+            }
+        }
+
+        async function fetchEvents() {
+            const eventCarouselContainer = document.getElementById('event-carousel');
+            eventCarouselContainer.innerHTML = '<div class="carousel-item active"><img src="[https://placehold.co/800x450/FF6347/FFFFFF?text=Loading+Events](https://placehold.co/800x450/FF6347/FFFFFF?text=Loading+Events)..." alt="Loading Events" class="w-full h-64 md:h-96 object-cover rounded-t-xl"><div class="p-6 bg-white rounded-b-xl"><h3 class="text-2xl font-bold text-gray-900 mb-2">Loading Events...</h3><p class="text-gray-700 mb-2">Please wait while we fetch upcoming events.</p></div></div>';
+
+            try {
+                // In a real app, you'd have a php/get_events.php
+                // For now, using static data for demonstration
+                const eventData = [
+                    { title: "Handmade Pasta Workshop", description: "Learn the art of making fresh pasta from scratch with Chef Maria. All skill levels welcome!", date: "July 20, 2025", location: "Online via Zoom", imageUrl: "[https://placehold.co/800x450/FF6347/FFFFFF?text=Pasta+Making+Workshop](https://placehold.co/800x450/FF6347/FFFFFF?text=Pasta+Making+Workshop)" },
+                    { title: "Artisan Bread Baking Masterclass", description: "Dive deep into the world of sourdough and artisan bread with our expert baker. Limited spots!", date: "August 5, 2025", location: "FoodFusion Kitchen Studio", imageUrl: "[https://placehold.co/800x450/4682B4/FFFFFF?text=Baking+Masterclass](https://placehold.co/800x450/4682B4/FFFFFF?text=Baking+Masterclass)" },
+                    { title: "Healthy & Delicious Meals Workshop", description: "Learn to prepare nutritious and flavorful meals for a healthier lifestyle. Perfect for beginners!", date: "September 1, 2025", location: "Online Webinar", imageUrl: "[https://placehold.co/800x450/32CD32/FFFFFF?text=Healthy+Cooking](https://placehold.co/800x450/32CD32/FFFFFF?text=Healthy+Cooking)" }
+                ];
+
+                eventCarouselContainer.innerHTML = ''; // Clear loading indicator
+                eventData.forEach((event, index) => {
+                    const eventItemHtml = `
+                        <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                            <img src="${event.imageUrl}" alt="${event.title}" class="w-full h-64 md:h-96 object-cover rounded-t-xl">
+                            <div class="p-6 bg-white rounded-b-xl">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">${event.title}</h3>
+                                <p class="text-gray-700 mb-2">${event.description}</p>
+                                <p class="text-gray-600 text-sm"><i class="fas fa-calendar-alt mr-2"></i>${event.date} | <i class="fas fa-map-marker-alt mr-2"></i>${event.location}</p>
+                                <button class="mt-4 px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition duration-300">Register Now</button>
+                            </div>
+                        </div>
+                    `;
+                    eventCarouselContainer.insertAdjacentHTML('beforeend', eventItemHtml);
+                });
+
+                // Re-initialize carousel variables after content is loaded
+                eventItems = document.querySelectorAll('#event-carousel .carousel-item');
+                totalEvents = eventItems.length;
+                currentEventIndex = 0;
+                if (totalEvents > 0) {
+                    showEvent(currentEventIndex);
+                    startCarousel();
+                }
+
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                eventCarouselContainer.innerHTML = '<div class="carousel-item active"><div class="p-6 bg-white rounded-b-xl text-center text-red-600">Failed to load events.</div></div>';
+            }
+        }
+
+        async function fetchRecipes() {
+            const recipeGridContainer = document.getElementById('recipe-grid-container');
+            recipeGridContainer.innerHTML = '<div class="col-span-full text-center text-gray-600">Loading recipes...</div>';
+
+            try {
+                const response = await fetch('php/get_recipes.php'); // Call your PHP script
+                const result = await response.json();
+
+                if (result.success && result.data.length > 0) {
+                    recipeGridContainer.innerHTML = ''; // Clear loading indicator
+                    result.data.forEach(recipe => {
+                        const recipeCardHtml = `
+                            <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+                                <img src="${recipe.image_url || '[https://placehold.co/600x400/CCCCCC/000000?text=No+Image](https://placehold.co/600x400/CCCCCC/000000?text=No+Image)'}" alt="${recipe.title}" class="w-full h-48 object-cover">
+                                <div class="p-4">
+                                    <h3 class="font-bold text-xl text-gray-900 mb-2">${recipe.title}</h3>
+                                    <p class="text-gray-700 text-sm mb-2">${recipe.description || 'No description available.'}</p>
+                                    <div class="flex justify-between text-xs text-gray-600 mb-3">
+                                        <span><i class="fas fa-utensils mr-1"></i> ${recipe.cuisine_type || 'N/A'}</span>
+                                        <span><i class="fas fa-leaf mr-1"></i> ${recipe.dietary_preferences || 'N/A'}</span>
+                                        <span><i class="fas fa-star mr-1"></i> ${recipe.difficulty || 'N/A'}</span>
+                                    </div>
+                                    <button class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition duration-300">View Recipe</button>
+                                </div>
+                            </div>
+                        `;
+                        recipeGridContainer.insertAdjacentHTML('beforeend', recipeCardHtml);
+                    });
+                } else {
+                    recipeGridContainer.innerHTML = '<div class="col-span-full text-center text-gray-600">No recipes found.</div>';
+                }
+            } catch (error) {
+                console.error('Error fetching recipes:', error);
+                recipeGridContainer.innerHTML = '<div class="col-span-full text-center text-red-600">Failed to load recipes.</div>';
+            }
+        }
+
+        async function fetchCommunityPosts() {
+            const communityPostsContainer = document.getElementById('community-posts-container');
+            communityPostsContainer.innerHTML = '<div class="col-span-full text-center text-gray-600">Loading community posts...</div>';
+
+            try {
+                // In a real app, you'd have a php/get_community_posts.php
+                // For now, using static data for demonstration
+                const postsData = [
+                    { title: "Quick Weeknight Stir-Fry Tip", content: "For a super quick stir-fry, always have your veggies prepped and sauce mixed beforehand. High heat, quick toss, and you're done! Saves so much time on busy evenings.", author: "CookingEnthusiast123", date: "July 1, 2025" },
+                    { title: "My First Sourdough Journey", content: "Just baked my first sourdough loaf! It wasn't perfect, but the taste was amazing. Don't be afraid to try, even if it seems daunting. The process is so rewarding!", author: "BakingNewbie", date: "June 28, 2025" },
+                    { title: "Recipe: Creamy Tomato Soup", content: "Here's my go-to recipe for a comforting creamy tomato soup. Sauté onions and garlic, add canned tomatoes, vegetable broth, and a splash of cream. Blend until smooth!", author: "SoupLoverSarah", date: "June 25, 2025" }
+                ];
+
+                communityPostsContainer.innerHTML = ''; // Clear loading indicator
+                postsData.forEach(post => {
+                    const postHtml = `
+                        <div class="bg-gray-50 rounded-xl shadow-md p-6">
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">${post.title}</h3>
+                            <p class="text-gray-600 text-sm mb-3">By <span class="font-semibold">${post.author}</span> on ${post.date}</p>
+                            <p class="text-gray-700">${post.content}</p>
+                        </div>
+                    `;
+                    communityPostsContainer.insertAdjacentHTML('beforeend', postHtml);
+                });
+
+            } catch (error) {
+                console.error('Error fetching community posts:', error);
+                communityPostsContainer.innerHTML = '<div class="col-span-full text-center text-red-600">Failed to load community posts.</div>';
+            }
+        }
+
+        async function fetchCulinaryResources() {
+            const container = document.getElementById('culinary-resources-container');
+            container.innerHTML = '<div class="col-span-full text-center text-gray-600">Loading culinary resources...</div>';
+
+            try {
+                // In a real app, you'd have a php/get_culinary_resources.php
+                // For now, using static data for demonstration
+                const resourcesData = [
+                    { title: "Mastering Knife Skills (Video)", description: "A comprehensive video tutorial on essential knife techniques for efficient and safe cooking.", type: "Video", url: "#", imageUrl: "[https://placehold.co/600x400/FF6347/FFFFFF?text=Knife+Skills](https://placehold.co/600x400/FF6347/FFFFFF?text=Knife+Skills)" },
+                    { title: "Baking Basics: A Beginner's Guide (PDF)", description: "Download our easy-to-follow guide to the fundamentals of baking, from measuring to mixing.", type: "PDF", url: "#", imageUrl: "[https://placehold.co/600x400/4682B4/FFFFFF?text=Baking+Basics](https://placehold.co/600x400/4682B4/FFFFFF?text=Baking+Basics)" },
+                    { title: "Smart Meal Prep Hacks (Article)", description: "Discover clever tips and tricks to streamline your meal preparation for the week ahead.", type: "Article", url: "#", imageUrl: "[https://placehold.co/600x400/32CD32/FFFFFF?text=Meal+Prep](https://placehold.co/600x400/32CD32/FFFFFF?text=Meal+Prep)" }
+                ];
+
+                container.innerHTML = '';
+                resourcesData.forEach(resource => {
+                    const resourceHtml = `
+                        <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+                            <img src="${resource.imageUrl}" alt="${resource.title}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">${resource.title}</h3>
+                                <p class="text-gray-700 text-sm mb-3">${resource.description}</p>
+                                <a href="${resource.url}" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition duration-300 inline-block">${resource.type === 'Video' ? 'Watch Video' : 'Download PDF'}</a>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', resourceHtml);
+                });
+            } catch (error) {
+                console.error('Error fetching culinary resources:', error);
+                container.innerHTML = '<div class="col-span-full text-center text-red-600">Failed to load culinary resources.</div>';
+            }
+        }
+
+        async function fetchEducationalResources() {
+            const container = document.getElementById('educational-resources-container');
+            container.innerHTML = '<div class="col-span-full text-center text-gray-600">Loading educational resources...</div>';
+
+            try {
+                // In a real app, you'd have a php/get_educational_resources.php
+                // For now, using static data for demonstration
+                const resourcesData = [
+                    { title: "The Science of Baking (Article)", description: "Understand the chemical reactions that make your cakes rise and cookies crisp.", type: "Article", url: "#", imageUrl: "[https://placehold.co/600x400/FFD700/000000?text=Food+Science](https://placehold.co/600x400/FFD700/000000?text=Food+Science)" },
+                    { title: "Beginner's Guide to Nutrition (Course)", description: "An introductory course to understanding macronutrients, micronutrients, and balanced diets.", type: "Course", url: "#", imageUrl: "[https://placehold.co/600x400/ADD8E6/000000?text=Nutrition](https://placehold.co/600x400/ADD8E6/000000?text=Nutrition)" },
+                    { title: "A Brief History of Spices (Infographic)", description: "Explore the fascinating journey of spices through history and their impact on global cuisine.", type: "Infographic", url: "#", imageUrl: "[https://placehold.co/600x400/DDA0DD/000000?text=Food+History](https://placehold.co/600x400/DDA0DD/000000?text=Food+History)" }
+                ];
+
+                container.innerHTML = '';
+                resourcesData.forEach(resource => {
+                    const resourceHtml = `
+                        <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+                            <img src="${resource.imageUrl}" alt="${resource.title}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">${resource.title}</h3>
+                                <p class="text-gray-700 text-sm mb-3">${resource.description}</p>
+                                <a href="${resource.url}" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition duration-300 inline-block">${resource.type === 'Course' ? 'Enroll Now' : 'Read More'}</a>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', resourceHtml);
+                });
+            } catch (error) {
+                console.error('Error fetching educational resources:', error);
+                container.innerHTML = '<div class="col-span-full text-center text-red-600">Failed to load educational resources.</div>';
+            }
+        }
+
+        // Function to call all dynamic content fetching functions
+        function fetchDynamicContent() {
+            fetchNewsFeed();
+            fetchEvents();
+            fetchRecipes();
+            fetchCommunityPosts();
+            fetchCulinaryResources();
+            fetchEducationalResources();
+        }
+    </script>
+</body>
+</html>
